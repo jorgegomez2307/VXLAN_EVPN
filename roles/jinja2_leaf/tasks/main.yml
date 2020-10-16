@@ -1,0 +1,12 @@
+---
+# tasks file for jinja2_leaf
+  - name: Generate Leaf Config
+  
+    template: src=leaf.j2 dest=roles/jinja2_leaf/files/{{inventory_hostname}}.cfg
+    tags:
+    - template
+  - name: Push Leaf Config
+    ios_config:
+      src: roles/jinja2_leaf/files/{{inventory_hostname}}.cfg
+      provider: "{{ nxos_provider }}"
+    

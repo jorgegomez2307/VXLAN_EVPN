@@ -1,0 +1,10 @@
+  - hosts: spines
+    connection: local
+    
+    roles:
+    - spine
+
+  - hosts: leaves
+    connection: local
+    roles:
+    - leaf

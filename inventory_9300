@@ -1,0 +1,24 @@
+[all:vars]
+user=admin
+pwd=cisco!123
+ansible_python_interpreter="/usr/bin/env python"
+
+[spines]
+10.82.142.18
+10.82.142.19
+
+[leaves]
+10.82.142.20
+10.82.142.21
+
+[spine-1]
+10.82.142.18
+
+[spine-2]
+10.82.142.19
+
+[leaf-1]
+10.82.142.20
+
+[leaf-2]
+10.82.142.21

@@ -1,0 +1,7 @@
+---
+  hostname: N9732PX-2
+  loopback0: 192.168.0.7
+  loopback1: 192.168.0.100
+  router_id: 192.168.0.7
+  ip_address: 10.82.142.19
+
