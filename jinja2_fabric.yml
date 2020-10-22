@@ -1,11 +1,17 @@
   - hosts: spines
     connection: local
+    vars:
+      multicast: 'Phantom'
+      rp_distribution: 'Auto'
     
     roles:
     - jinja2_spine
 
   - hosts: leaves
     connection: local
+    vars:
+      multicast: 'Phantom'
+      rp_distribution: 'Auto'
     roles:
     - jinja2_leaf
 

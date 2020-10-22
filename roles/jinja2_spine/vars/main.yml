@@ -21,3 +21,5 @@
   -  interface: loopback 1
   s1_loopback: 192.168.0.6
   s2_loopback: 192.168.0.7
+  ph_rp_ip: 192.168.0.130
+  rp_address: 192.168.0.100

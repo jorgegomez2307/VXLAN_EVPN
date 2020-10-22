@@ -5,7 +5,10 @@ feature nv overlay
 feature vn-segment-vlan-based
 nv overlay evpn
 feature pim
+feature ospf
 ! 
+#Configure OSPF Instance
+router ospf 1
 !
 # Configure Underlay  (OSPF + BGP)
 # Configure Loopback addresses
@@ -29,8 +32,20 @@ interface {{interface['interface']}}
 !
 {% endfor %}
 !
-# Configure pim
+# Configure RP Address
+{%if  multicast == 'Anycast' and rp_distribution =='Static'%}
 ip pim rp-address {{rp_address}}
+{%endif%}
+{%if  multicast == 'Phantom' and rp_distribution =='Static'%}
+ip pim rp-address {{ph_rp_ip}} group-list 239.0.0.0/24 bidir
+{%endif%}
+!
+{%if  rp_distribution == 'Auto'%}
+ip pim auto-rp listen
+{% endif %}
+{% if multicast == 'Anycast' and rp_distribution =='BSR'%}
+ip pim bsr listen
+{%endif%}
 spanning-tree vlan 1,140,141,999 priority 4096
 !
 # Configure BGP

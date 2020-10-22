@@ -3,6 +3,11 @@ feature nv overlay
 feature vn-segment-vlan-based
 nv overlay evpn
 feature pim
+feature ospf
+!
+#Configure OSPF Instance
+router ospf 1
+  router-id {{loopback0}}
 !
 router bgp {{asn}}
   router-id {{router_id}}
@@ -25,22 +30,60 @@ router bgp {{asn}}
 {% endfor %} 
 # Configure Loopback addresses
 interface loopback 0
+no ip address
 ip address {{loopback0}}/32
 !
+{%if multicast == 'Anycast'%}
 interface loopback 1
+no ip address
 ip address {{loopback1}}/32
+{%endif%}
 !
-ip pim rp-address {{loopback1}}
+{%if multicast == 'Phantom'%}
+interface loopback 1
+no ip address
+ip address {{ph_rp_loopback1}}/{{ph_rp_mask}}
+ip router ospf 1 area 0.0.0.0
+ip ospf network point-to-point
+{%endif%}
+
+# Configure RP Address
+{%if  multicast == 'Anycast' and rp_distribution =='Static'%}
+ip pim rp-address {{rp_address}}
 ip pim anycast-rp {{loopback1}} {{s1_loopback}}
 ip pim anycast-rp {{loopback1}} {{s2_loopback}}
+{%endif%}
+{%if  multicast == 'Phantom' and rp_distribution =='Static'%}
+ip pim rp-address {{ph_rp_ip}} group-list 239.0.0.0/24 bidir
+{%endif%}
+{% if multicast == 'Phantom' and rp_distribution =='Auto'%}
+ip  pim send-rp-announce {{ph_rp_ip}} group-list 239.0.0.0/24 bidir
+ip pim send-rp-discovery loopback 1
+ip pim auto-rp listen forward
+{%endif%}
+{% if multicast == 'Anycast' and rp_distribution =='Auto'%}
+ip  pim send-rp-announce {{ph_rp_ip}}  group-list 239.0.0.0/24
+ip pim send-rp-discovery loopback 1
+ip pim auto-rp listen
+ip pim anycast-rp {{loopback1}} {{s1_loopback}}
+ip pim anycast-rp {{loopback1}} {{s2_loopback}}
+{%endif%}
+{% if multicast == 'Anycast' and rp_distribution =='BSR'%}
+ip pim rp-candidate loopback 1 group-list 239.0.0.0/24
+ip pim bsr-candidate loopback 1
+ip pim anycast-rp {{loopback1}} {{s1_loopback}}
+ip pim anycast-rp {{loopback1}} {{s2_loopback}}
+ip pim bsr listen
+{%endif%}
 
+!
 # for loop to enable PIM on L3 interface
 {%for interface in L3_interfaces%}
 interface {{interface['interface']}}
 {% if 'Ethernet' in interface['interface']   %}
   no switchport
   medium p2p
-  ip unnumbered loopback 1 
+  ip unnumbered loopback 0 
 {% endif %}
   ip router ospf 1 area 0.0.0.0
   ip pim sparse-mode

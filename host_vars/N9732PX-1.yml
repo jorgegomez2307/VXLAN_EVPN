@@ -4,4 +4,6 @@
   loopback1: 192.168.0.100
   router_id: 192.168.0.6
   ip_address: 10.82.142.18
+  ph_rp_loopback1: 192.168.0.129
+  ph_rp_mask: 30
 
