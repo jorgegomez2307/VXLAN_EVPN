@@ -4,13 +4,26 @@ feature bgp
 feature nv overlay
 feature vn-segment-vlan-based
 nv overlay evpn
-feature pim
-feature ospf
-! 
-#Configure OSPF Instance
-router ospf 1
+{% if igp == 'ospf'%}
+feauture ospf
+{% endif %}
+{% if igp == 'isis'%}
+feature isis
+{% endif %}
 !
-# Configure Underlay  (OSPF + BGP)
+! 
+hostname {{hostname}}
+#Configure OSPF/IS-IS Instance
+{% if igp == 'ospf'%}
+router ospf 1
+  router-id {{loopback0}}
+{% endif %}
+{% if igp == 'isis'%}
+router isis UNDERLAY
+  net {{ isis_net}}
+  set-overload-bit on-startup 60
+{% endif %}
+!
 # Configure Loopback addresses
 interface loopback 0
   ip address {{loopback0}}/32
@@ -24,9 +37,14 @@ interface {{interface['interface']}}
 {% if 'Ethernet' in interface['interface']   %}
   no switchport
   medium p2p
-  ip unnumbered loopback 1 
+  ip unnumbered loopback 0 
 {% endif %}
+{% if igp == 'ospf'%}
   ip router ospf 1 area 0.0.0.0
+{% endif %}
+{% if igp == 'isis'%}
+  ip router isis UNDERLAY
+{% endif %}
   ip pim sparse-mode
   no shutdown
 !
@@ -41,7 +59,7 @@ ip pim rp-address {{ph_rp_ip}} group-list 239.0.0.0/24 bidir
 {%endif%}
 !
 {%if  rp_distribution == 'Auto'%}
-ip pim auto-rp listen
+ip pim auto-rp listen forward
 {% endif %}
 {% if multicast == 'Anycast' and rp_distribution =='BSR'%}
 ip pim bsr listen

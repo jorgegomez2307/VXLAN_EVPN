@@ -3,11 +3,25 @@ feature nv overlay
 feature vn-segment-vlan-based
 nv overlay evpn
 feature pim
-feature ospf
+{% if igp == 'ospf'%}
+feauture ospf
+{% endif %}
+{% if igp == 'isis'%}
+feature isis
+{% endif %}
 !
-#Configure OSPF Instance
+hostname {{hostname}}
+!
+#Configure OSPF/IS-IS Instance
+{% if igp == 'ospf'%}
 router ospf 1
   router-id {{loopback0}}
+{% endif %}
+{% if igp == 'isis'%}
+router isis UNDERLAY
+  net {{ isis_net}}
+  set-overload-bit on-startup 60
+{% endif %}
 !
 router bgp {{asn}}
   router-id {{router_id}}
@@ -43,8 +57,9 @@ ip address {{loopback1}}/32
 interface loopback 1
 no ip address
 ip address {{ph_rp_loopback1}}/{{ph_rp_mask}}
-ip router ospf 1 area 0.0.0.0
+{% if igp == 'ospf'%}
 ip ospf network point-to-point
+{%endif%}
 {%endif%}
 
 # Configure RP Address
@@ -85,7 +100,13 @@ interface {{interface['interface']}}
   medium p2p
   ip unnumbered loopback 0 
 {% endif %}
+{% if igp == 'ospf'%}
   ip router ospf 1 area 0.0.0.0
+{% endif %}
+{% if igp == 'isis'%}
+  ip router isis UNDERLAY
+  isis circuit-type level-1
+{% endif %}
   ip pim sparse-mode
   no shutdown
 !

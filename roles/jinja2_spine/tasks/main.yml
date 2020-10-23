@@ -2,10 +2,10 @@
 # tasks file for jinja2_spine
   - name: Generate Spine Config
 
-    template: src=spine.j2 dest=roles/jinja2_spine/files/{{inventory_hostname}}_{{multicast}}_{{rp_distribution}}.cfg
+    template: src=spine.j2 dest=roles/jinja2_spine/files/{{inventory_hostname}}_{{multicast}}_{{rp_distribution}}_{{igp}}.cfg
     tags:
     - template
   - name: Push Spine Config
     ios_config:
-      src: roles/jinja2_spine/files/{{inventory_hostname}}_{{multicast}}_{{rp_distribution}}.cfg
+      src: roles/jinja2_spine/files/{{inventory_hostname}}_{{multicast}}_{{rp_distribution}}_{{igp}}.cfg
       provider: "{{ nxos_provider }}"

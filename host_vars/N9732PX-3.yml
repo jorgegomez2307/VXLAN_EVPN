@@ -1,6 +1,7 @@
 ---
-  hostname: leaf_1
+  hostname: N9732PX-3
   loopback0: 192.168.0.8
   loopback1: 192.168.0.18
   router_id: 192.168.0.8
-  ip_address: 10.82.142.20
+  ip_address: 10.197.174.70
+  isis_net: 49.0000.0000.0003.00

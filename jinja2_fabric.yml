@@ -1,8 +1,9 @@
   - hosts: spines
     connection: local
     vars:
-      multicast: 'Phantom'
-      rp_distribution: 'Auto'
+      multicast: 'Anycast'
+      rp_distribution: 'BSR'
+      igp: 'isis'
     
     roles:
     - jinja2_spine
@@ -10,8 +11,9 @@
   - hosts: leaves
     connection: local
     vars:
-      multicast: 'Phantom'
-      rp_distribution: 'Auto'
+      multicast: 'Anycast'
+      rp_distribution: 'BSR'
+      igp: 'isis'
     roles:
     - jinja2_leaf
 

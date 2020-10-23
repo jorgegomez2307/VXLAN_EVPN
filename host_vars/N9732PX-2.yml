@@ -3,6 +3,7 @@
   loopback0: 192.168.0.7
   loopback1: 192.168.0.100
   router_id: 192.168.0.7
-  ip_address: 10.82.142.19
+  ip_address: 10.197.174.69
   ph_rp_loopback1: 192.168.0.129
   ph_rp_mask: 29
+  isis_net: 49.0000.0000.0002.00
